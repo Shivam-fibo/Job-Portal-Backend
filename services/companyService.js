@@ -15,8 +15,8 @@ export const getCompaniesFromTheirStack = async (page = 1, limit = 50) => {
   });
 
   if (!response.ok) {
-    throw new Error(`TheirStack API error: ${response.statusText}`);.
-    
+    throw new Error(`TheirStack API error: ${response.statusText}`);
+
   }
 
   const data = await response.json();
