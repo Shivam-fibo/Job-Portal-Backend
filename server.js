@@ -1,11 +1,11 @@
-// server.js or server.ts (if using TypeScript)
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
-import jobRotes from './routes/jobRoutes.js'
-
+import jobRoutes from './routes/jobRoutes.js'
+import studentRoutes from './routes/studentRoutes.js'
 dotenv.config();
 
 const app = express();
@@ -24,8 +24,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/job', jobRotes)
-
+app.use('/api/job', jobRoutes)
+app.use('/api/student', studentRoutes)
 // Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
