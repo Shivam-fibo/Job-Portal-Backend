@@ -113,7 +113,7 @@ export const verifyEmailOTP = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    user.isVerified = true;
+    user.isVerified = true
     user.emailOTP = null;
     user.emailOTPExpires = null;
     await user.save();
@@ -124,8 +124,8 @@ export const verifyEmailOTP = async (req, res) => {
 
     res.cookie('token', token, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'Strict',
+  secure: false,
+  sameSite: 'None',
   maxAge: 7 * 24 * 60 * 60 * 1000
 });
 
@@ -149,6 +149,7 @@ export const verifyEmailOTP = async (req, res) => {
 
 // Login User
 export const login = async (req, res) => {
+  console.log(req)
   try {
     const { email, password, role } = req.body;
 
@@ -177,8 +178,14 @@ export const login = async (req, res) => {
         skills = profile.skills || [];
       }
     }
+res.cookie('token', token, {
+  httpOnly: true,
+   secure:false,
+  sameSite: 'None',
+  maxAge: 7 * 24 * 60 * 60 * 1000
+});
 
-    // Send response with token and user info
+
     res.json({
       message: 'Login successful',
       token,
@@ -266,3 +273,11 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+export const logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    sameSite: 'None',
+    secure: false
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
+};
