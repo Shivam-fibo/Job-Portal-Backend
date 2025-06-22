@@ -6,7 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
-
+import cookieParser from 'cookie-parser';
 
 
 dotenv.config();
@@ -16,6 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser())
 
 app.get("/", (req, res) => {
     res.send("Hello World");

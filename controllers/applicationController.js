@@ -4,6 +4,12 @@ import StudentProfile from '../models/studentProfile.js';
 import Announcement from '../models/announcementModel.js';
 import User from '../models/User.js';
 import SibApiV3Sdk from 'sib-api-v3-sdk';
+import dotenv from "dotenv"
+
+
+dotenv.config();
+
+
 export const applyToJob = async (req, res) => {
   console.log("req body is : ",req.body)
   try {
@@ -107,7 +113,7 @@ export const getAllStudentProfile = async(req, res) =>{
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = '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'
+apiKey.apiKey = process.env.BREVO_API_KEY
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export const createAnnoucment = async (req, res) => {

@@ -3,11 +3,14 @@ import jwt from 'jsonwebtoken'
 import SibApiV3Sdk from 'sib-api-v3-sdk'
 import StudentProfile from '../models/studentProfile.js';
 
+import dotenv from "dotenv"
+
+
+dotenv.config();
 // Configure Brevo (Sendinblue)
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = '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'
-
+apiKey.apiKey = process.env.BREVO_API_KEY
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 // Generate JWT Token
@@ -47,7 +50,6 @@ export const register = async (req, res) => {
     await user.save();
     console.log("✅ User saved to database:", user._id);
 
-    // Send OTP using Brevo - EXACTLY like forgot password
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.subject = 'Verify Your Email - OTP';
     sendSmtpEmail.htmlContent = `
@@ -118,7 +120,15 @@ export const verifyEmailOTP = async (req, res) => {
     console.log("✅ Email verified and user updated:", user._id);
 
     const token = generateToken(user._id);
-    console.log("🔐 JWT generated:", token);
+  
+
+    res.cookie('token', token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'Strict',
+  maxAge: 7 * 24 * 60 * 60 * 1000
+});
+
 
     res.status(200).json({
       message: 'Email verified successfully',
