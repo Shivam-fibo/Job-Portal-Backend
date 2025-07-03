@@ -149,7 +149,7 @@ export const verifyEmailOTP = async (req, res) => {
 
 // Login User
 export const login = async (req, res) => {
-  console.log(req)
+
   try {
     const { email, password, role } = req.body;
 
