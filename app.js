@@ -15,16 +15,18 @@ const app = express();
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://job-portal-frontend-pi-wine.vercel.app/',
   credentials: true
 }));
+
+// app.use(cors())
 
 app.use(express.json());
 app.use(cookieParser())
 
 app.get("/", (req, res) => {
     res.send("Hello World");
-});
+})
 
 
 // MongoDB Connection
@@ -35,7 +37,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error:', err));
 
-console.log(process.env.MONGODB_URI)
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/job', jobRoutes);
