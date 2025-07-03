@@ -15,7 +15,7 @@ const app = express();
 
 
 app.use(cors({
-  origin: 'https://job-portal-frontend-pi-wine.vercel.app/',
+  origin: 'https://job-portal-frontend-pi-wine.vercel.app',
   credentials: true
 }));
 
