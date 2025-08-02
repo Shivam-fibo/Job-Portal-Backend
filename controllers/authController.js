@@ -13,9 +13,12 @@ const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.BREVO_API_KEY
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
+
+
+
 // Generate JWT Token
 export const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET || 'fallback_secret', {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '7d'
   });
 };
@@ -120,14 +123,14 @@ export const verifyEmailOTP = async (req, res) => {
     console.log("✅ Email verified and user updated:", user._id);
 
     const token = generateToken(user._id);
-  
+
 
     res.cookie('token', token, {
-  httpOnly: true,
-  secure: false,
-  sameSite: 'None',
-  maxAge: 7 * 24 * 60 * 60 * 1000
-});
+      // httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
 
     res.status(200).json({
@@ -178,12 +181,15 @@ export const login = async (req, res) => {
         skills = profile.skills || [];
       }
     }
-res.cookie('token', token, {
-  httpOnly: true,
-   secure:false,
-  sameSite: 'None',
-  maxAge: 7 * 24 * 60 * 60 * 1000
-});
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+
+console.log('Set-Cookie header:', res.getHeader('Set-Cookie'));
 
 
     res.json({
@@ -193,7 +199,7 @@ res.cookie('token', token, {
         id: user._id,
         email: user.email,
         role: user.role,
-        skills, 
+        skills,
       }
     });
   } catch (error) {
@@ -213,7 +219,7 @@ export const forgotPassword = async (req, res) => {
 
     // Generate OTP
     const otp = generateOTP();
-    
+    console.log(otp)
     // Save OTP to user (expires in 10 minutes)
     user.resetOTP = otp;
     user.resetOTPExpires = new Date(Date.now() + 10 * 60 * 1000);
@@ -233,7 +239,7 @@ export const forgotPassword = async (req, res) => {
         <p>If you didn't request this, please ignore this email.</p>
       </div>
     `;
-    sendSmtpEmail.sender = {name: 'Placement Cell', email: 'placementofficer778@gmail.com' };
+    sendSmtpEmail.sender = { name: 'Placement Cell', email: 'placementofficer778@gmail.com' };
 
     sendSmtpEmail.to = [{ email: user.email }];
 
@@ -251,7 +257,7 @@ export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
 
-    const user = await User.findOne({ 
+    const user = await User.findOne({
       email,
       resetOTP: otp,
       resetOTPExpires: { $gt: Date.now() }
@@ -275,9 +281,9 @@ export const resetPassword = async (req, res) => {
 
 export const logout = (req, res) => {
   res.clearCookie('token', {
-    httpOnly: true,
+    // httpOnly: true,
     sameSite: 'None',
-    secure: false
+    secure: true
   });
   res.status(200).json({ message: 'Logged out successfully' });
 };

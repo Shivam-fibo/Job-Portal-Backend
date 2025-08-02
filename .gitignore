@@ -15,10 +15,6 @@ pids/
 *.pid.lock
 
 # Environment variables
-.env
-.env.test
-.env.production
-.env.local
 
 # Binaries
 *.exe
@@ -65,3 +61,4 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+config.bat
